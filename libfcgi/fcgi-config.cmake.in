@@ -1,0 +1,55 @@
+#
+# fcgi-config.cmake
+#
+# Cache Variables: (not for direct use in CMakeLists.txt)
+#  FCGI_ROOT
+#  FCGI_LIBRARY
+#  FCGI_INCLUDE_DIR
+#
+# Non-cache variables you might use in your CMakeLists.txt:
+#  FCGI_FOUND
+#
+#  FCGI_LIBRARIES
+#  FCGI_INCLUDE_DIRS
+#  FCGI_LINKER_FLAGS
+#
+# Use this module this way:
+#  find_package(Systemd)
+#  include_directories(${FCGI_INCLUDE_DIRS})
+#  add_executable(myapp ${SOURCES})
+#  target_link_libraries(myapp ${FCGI_LIBRARIES})
+#  set_property(TARGET myapp PROPERTY LINK_FLAGS ${FCGI_LINKER_FLAGS})
+#
+# Requires these CMake modules:
+#  FindPackageHandleStandardArgs (CMake standard module)
+
+find_library(FCGI_LIBRARY
+	    NAMES
+	    fcgi libfcgi
+	    PATHS
+	    PATH_SUFFIXES
+	    lib)
+
+find_path(FCGI_INCLUDE_DIR
+	NAMES
+	fastcgi.h
+	PATHS
+	PATH_SUFFIXES
+	include)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(fcgi
+	DEFAULT_MSG
+	FCGI_LIBRARY
+	FCGI_INCLUDE_DIR)
+
+if(FCGI_FOUND)
+	add_library(${PROJECT_NAME}-shared SHARED IMPORTED)
+	set_target_properties(${PROJECT_NAME}-shared PROPERTIES IMPORTED_LOCATION ${FCGI_LIBRARY})
+	target_compile_definitions(${PROJECT_NAME}-shared INTERFACE HAVE_FCGI)
+
+	set(FCGI_LIBRARIES ${FCGI_LIBRARY})
+	set(FCGI_INCLUDE_DIRS ${FCGI_INCLUDE_DIR})
+	set(FCGI_LINKER_FLAGS ${FCGI_LINKER_FLAGS})
+	
+endif()
