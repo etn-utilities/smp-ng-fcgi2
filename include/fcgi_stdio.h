@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 #ifndef DLLAPI
-#if defined (_WIN32) && defined (_MSC_VER)
+#if defined (_WIN32) && defined (_MSC_VER) && !defined (FCGI_STATIC)
 #define DLLAPI __declspec(dllimport)
 #else
 #define DLLAPI

@@ -35,12 +35,13 @@
 #include "fcgiapp.h"
 
 #ifndef DLLAPI
-#if defined (_WIN32) && defined (_MSC_VER)
+#if defined (_WIN32) && defined (_MSC_VER) && !defined (FCGI_STATIC)
 #define DLLAPI __declspec(dllimport)
 #else
 #define DLLAPI
 #endif
 #endif
+
 
 #if ! HAVE_STREAMBUF_CHAR_TYPE
 typedef char char_type;

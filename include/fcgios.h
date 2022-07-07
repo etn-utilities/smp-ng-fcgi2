@@ -50,13 +50,12 @@ extern "C" {
 #endif /* !_WIN32 */
 
 #ifndef DLLAPI
-#if defined (_WIN32) && defined (_MSC_VER)
+#if defined (_WIN32) && defined (_MSC_VER) && !defined (FCGI_STATIC)
 #define DLLAPI __declspec(dllimport)
 #else
 #define DLLAPI
 #endif
 #endif
-
 
 /* This is the initializer for a "struct timeval" used in a select() call
  * right after a new request is accept()ed to determine readablity.  Its

@@ -58,9 +58,12 @@ else()
         IF WIN32
     )
 
-    cpl_compile_definitions(PRIVATE "DLLAPI=__declspec(dllexport)")
+    cpl_compile_definitions(SUFFIX shared PRIVATE "DLLAPI=__declspec(dllexport)")
+    cpl_compile_definitions(SUFFIX static PUBLIC "FCGI_STATIC")
 
 endif()
+
+add_subdirectory(examples/cmake)
 
 ########################################################################################################################
 # Complete
