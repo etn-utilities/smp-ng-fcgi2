@@ -51,14 +51,14 @@ find_package_handle_standard_args(fcgi
 	FCGI_INCLUDE_DIR)
 
 if(FCGI_FOUND)
-	if (NOT @PROJECT_NAME@-shared)
+	if (NOT TARGET @PROJECT_NAME@-shared)
 		add_library(@PROJECT_NAME@-shared SHARED IMPORTED)
 		set_target_properties(@PROJECT_NAME@-shared PROPERTIES IMPORTED_LOCATION ${FCGI_LIBRARY})
 		target_compile_definitions(@PROJECT_NAME@-shared INTERFACE HAVE_FCGI)
 		target_include_directories(@PROJECT_NAME@-shared INTERFACE ${FCGI_INCLUDE_DIR})
 	endif()
 
-	if (NOT @PROJECT_NAME@-static)
+	if (NOT TARGET @PROJECT_NAME@-static)
 		if (NOT FCGI_LIBRARY_STATIC)
 			add_library(@PROJECT_NAME@-static SHARED IMPORTED)
 			set_target_properties(@PROJECT_NAME@-static PROPERTIES IMPORTED_LOCATION ${FCGI_LIBRARY})
