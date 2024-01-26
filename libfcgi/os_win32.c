@@ -53,7 +53,9 @@ static HANDLE stdioHandles[3] = {INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
 static HANDLE acceptMutex = INVALID_HANDLE_VALUE;
 
 static BOOLEAN shutdownPending = FALSE;
+static BOOLEAN shutdownDone = FALSE;
 static BOOLEAN shutdownNow = FALSE;
+static CRITICAL_SECTION shutdownCritical;
 
 /*
  * An enumeration of the file types
@@ -318,7 +320,8 @@ int OS_LibInit(int stdioFds[3])
     if(libInitialized)
         return 0;
 
-    InitializeCriticalSection(&fdTableCritical);   
+    InitializeCriticalSection(&fdTableCritical);
+    InitializeCriticalSection(&shutdownCritical);
         
     /*
      * Initialize windows sockets library.
@@ -558,30 +561,34 @@ int OS_LibInit(int stdioFds[3])
  */
 void OS_LibShutdown()
 {
-
-    if (hIoCompPort != INVALID_HANDLE_VALUE) 
+    EnterCriticalSection(&shutdownCritical);
+    if (!shutdownDone)
     {
-        CloseHandle(hIoCompPort);
-        hIoCompPort = INVALID_HANDLE_VALUE;
+        if (hIoCompPort != INVALID_HANDLE_VALUE) 
+        {
+            CloseHandle(hIoCompPort);
+            hIoCompPort = INVALID_HANDLE_VALUE;
+        }
+
+        if (hStdinCompPort != INVALID_HANDLE_VALUE) 
+        {
+            CloseHandle(hStdinCompPort);
+            hStdinCompPort = INVALID_HANDLE_VALUE;
+        }
+
+        if (acceptMutex != INVALID_HANDLE_VALUE) 
+        {
+            ReleaseMutex(acceptMutex);
+        }
+
+        DisconnectNamedPipe(hListen);
+
+        CancelIo(hListen);
+    
+        WSACleanup();
+        shutdownDone = TRUE;
     }
-
-    if (hStdinCompPort != INVALID_HANDLE_VALUE) 
-    {
-        CloseHandle(hStdinCompPort);
-        hStdinCompPort = INVALID_HANDLE_VALUE;
-    }
-
-    if (acceptMutex != INVALID_HANDLE_VALUE) 
-    {
-        ReleaseMutex(acceptMutex);
-    }
-
-    DisconnectNamedPipe(hListen);
-
-    CancelIo(hListen);
-
-
-    WSACleanup();
+    LeaveCriticalSection(&shutdownCritical);
 }
 
 /*
