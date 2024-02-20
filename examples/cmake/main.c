@@ -25,7 +25,7 @@
 extern char **environ;
 #endif
 
-#include "fcgi_stdio.h"
+#include "fcgiapp.h"
 
 int main ()
 {

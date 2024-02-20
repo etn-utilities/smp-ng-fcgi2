@@ -6,12 +6,11 @@ find_package(CplCMakeModules REQUIRED)
 
 cpl_legacy_warning()
 
-cpl_add_test()
-
-cpl_link_package(fcgi)
-
-cpl_sources(main.c)
-
+if (NOT CPL_DISABLE_TESTS_ALL)
+	cpl_add_test()
+	cpl_link_package(fcgi)
+	cpl_sources(main.c)
+endif()
 
 ########################################################################################################################
 # Complete
