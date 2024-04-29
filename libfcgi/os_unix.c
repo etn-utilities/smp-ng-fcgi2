@@ -40,9 +40,9 @@
 #include <signal.h>
 #include <poll.h>
 
-#ifdef HAVE_NETDB_H
+// #ifdef HAVE_NETDB_H
 #include <netdb.h>
-#endif
+// #endif
 
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h> /* for getpeername */

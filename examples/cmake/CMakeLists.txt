@@ -8,7 +8,7 @@ cpl_legacy_warning()
 
 if (NOT CPL_DISABLE_TESTS_ALL)
 	cpl_add_test()
-	cpl_link_package(fcgi)
+	cpl_link_package(FcgiSmf)
 	cpl_sources(main.c)
 endif()
 
